@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>CTBA Judge Scoring</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+
+        body {
+            margin: 0;
+            padding: 0;
+
+            text-align: center;
+
+            background: rgb(164, 225, 229);
+        }
+
+
+        .page {
+            width: 100%;
+            max-width: 700px;
+
+            margin: 0 auto;
+
+            padding: 30px 20px;
+
+            box-sizing: border-box;
+        }
+
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+
+        .header h1 {
+            margin-bottom: 10px;
+        }
+
+
+        .header h2 {
+            margin-bottom: 20px;
+        }
+
+
+        .instructions {
+            margin-bottom: 25px;
+        }
+
+
+        .instructions h3 {
+            font-size: 16px;
+            font-weight: normal;
+
+            margin: 8px 0;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+        }
+
+
+        /* =========================
+           JUDGE INFORMATION
+        ========================= */
+
+        .judge-section {
+            background: rgb(176, 240, 245);
+
+            padding: 20px;
+
+            border-radius: 12px;
+
+            margin-bottom: 25px;
+        }
+
+
+        .judge-section label {
+            display: block;
+
+            font-weight: bold;
+
+            margin-bottom: 8px;
+        }
+
+
+        .judge-section input {
+            width: 100%;
+
+            max-width: 400px;
+
+            padding: 12px;
+
+            box-sizing: border-box;
+
+            border: 1px solid #ccc;
+
+            border-radius: 8px;
+
+            font-size: 16px;
+
+            margin-bottom: 15px;
+        }
+
+
+        /* =========================
+           LOADING
+        ========================= */
+
+        #loading {
+
+            color: white;
+
+            margin: 20px;
+        }
+
+
+        /* =========================
+           CONTESTANT CARD
+        ========================= */
+
+        .contestant-info {
+
+            background: rgb(176, 240, 245);
+
+            margin: 20px 0;
+
+            padding: 25px;
+
+            border-radius: 12px;
+
+            box-shadow:
+                0 2px 8px rgba(0,0,0,0.08);
+
+            text-align: center;
+        }
+
+
+        .contestant-number {
+
+            font-size: 24px;
+
+            color: #555;
+
+            margin-bottom: 5px;
+        }
+
+
+        .contestant-name {
+
+            font-size: 36px;
+
+            font-weight: bold;
+
+            margin-bottom: 8px;
+        }
+
+
+        .contestant-details {
+
+            font-size: 16px;
+
+            margin-bottom: 20px;
+        }
+
+
+        /* =========================
+           SCORES
+        ========================= */
+
+        .score-title {
+
+            font-size: 19px;
+
+            font-weight: bold;
+
+            margin-top: 20px;
+
+            margin-bottom: 15px;
+        }
+
+
+        .score-section {
+
+            display: flex;
+
+            flex-direction:column;
+
+            gap: 12px;
+
+            text-align: left;
+
+            margin-bottom: 20px;
+        }
+
+
+        .score-row {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 10px;
+        }
+
+
+        .score-row label {
+
+            font-size: 15px;
+
+            font-weight: bold;
+        }
+
+
+        .score-row input {
+
+            width: 75px;
+
+            padding: 10px;
+
+            box-sizing: border-box;
+
+            border: 1px solid #ccc;
+
+            border-radius: 8px;
+
+            font-size: 17px;
+
+            text-align: center;
+        }
+
+
+        /* Remove arrows from number inputs */
+
+        .score-row input::-webkit-outer-spin-button,
+        .score-row input::-webkit-inner-spin-button {
+
+            -webkit-appearance: none;
+
+            margin: 0;
+        }
+
+
+        /* =========================
+           STATUS
+        ========================= */
+
+        .status-section {
+
+            margin-top: 20px;
+
+            text-align: left;
+        }
+
+
+        .status-section label {
+
+            display: block;
+
+            font-weight: bold;
+
+            margin-bottom: 8px;
+        }
+
+
+        .status-section input,
+        .status-section select {
+
+            width: 100%;
+
+            padding: 12px;
+
+            box-sizing: border-box;
+
+            border: 1px solid #ccc;
+
+            border-radius: 8px;
+
+            font-size: 16px;
+
+            background: white;
+        }
+
+
+        /* =========================
+           NOTES
+        ========================= */
+
+        .notes-section {
+
+            margin-top: 20px;
+
+            text-align:left;
+        }
+
+
+        .notes-section label {
+
+            display: block;
+
+            font-weight: bold;
+
+            margin-bottom: 8px;
+        }
+
+
+        .notes-section textarea {
+
+            width: 100%;
+
+            min-height: 100px;
+
+            padding: 12px;
+
+            box-sizing: border-box;
+
+            border: 1px solid #ccc;
+
+            border-radius: 8px;
+
+            font-size: 16px;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            resize: vertical;
+        }
+
+
+        .char-count {
+
+            font-size: 13px;
+
+            color: #666;
+
+            text-align: right;
+
+            margin-top: 4px;
+        }
+
+
+        /* =========================
+           UNIFIED BOX STYLE
+           (applies to every input/select/textarea
+           on the actual contestant card markup)
+        ========================= */
+
+        .contestant-card {
+
+            background: rgb(176, 240, 245);
+
+            margin: 20px 0;
+
+            padding: 25px;
+
+            border-radius: 12px;
+
+            box-shadow:
+                0 2px 8px rgba(0,0,0,0.08);
+
+            text-align: left;
+        }
+
+
+        .contestant-header {
+
+            text-align: center;
+
+            margin-bottom: 15px;
+        }
+
+
+        .contestant-header .contestant-number {
+
+            font-size: 18px;
+
+            color: #444;
+
+            display: block;
+
+            margin-bottom: 4px;
+        }
+
+
+        .contestant-header h1 {
+
+            font-size: 30px;
+
+            margin: 0;
+        }
+
+
+        .info-item,
+        .score-item,
+        .form-group {
+
+            margin-bottom: 15px;
+        }
+
+
+        .info-item label,
+        .score-item label,
+        .form-group label {
+
+            display: block;
+
+            font-weight: bold;
+
+            margin-bottom: 6px;
+
+            font-size: 15px;
+        }
+
+
+        .info-item input,
+        .score-item input,
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+
+            width: 100%;
+
+            padding: 12px;
+
+            box-sizing: border-box;
+
+            border: 1px solid #ccc;
+
+            border-radius: 8px;
+
+            font-size: 16px;
+
+            background: white;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+        }
+
+
+        .score-grid {
+
+            display: grid;
+
+            grid-template-columns: repeat(2, 1fr);
+
+            gap: 12px;
+        }
+
+
+        .scores h3 {
+
+            margin-top: 10px;
+
+            margin-bottom: 12px;
+        }
+
+
+        @media (max-width: 480px) {
+
+            .score-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+
+        /* =========================
+           SUBMIT
+        ========================= */
+
+        #submit-btn {
+
+            border: none;
+
+            border-radius: 8px;
+
+            padding: 14px 30px;
+
+            font-size: 18px;
+
+            cursor: pointer;
+
+            background: #000000;
+
+            color: white;
+
+            margin-top: 20px;
+
+            margin-bottom: 30px;
+        }
+
+
+        #submit-btn:hover {
+
+            opacity: 0.85;
+        }
+
+
+        #submit-btn:disabled {
+
+            opacity: 0.5;
+
+            cursor: not-allowed;
+        }
+
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 600px) {
+
+            .page {
+
+                padding: 20px 12px;
+            }
+
+
+            .header h1 {
+
+                font-size: 28px;
+            }
+
+
+            .header h2 {
+
+                font-size: 21px;
+            }
+
+
+            .instructions h3 {
+
+                font-size: 14px;
+            }
+
+
+            .contestant-info {
+
+                padding: 20px 15px;
+            }
+
+
+            .contestant-name {
+
+                font-size: 21px;
+            }
+
+
+            .score-row {
+
+                align-items: center;
+            }
+
+
+            .score-row label {
+
+                font-size: 14px;
+            }
+
+
+            .score-row input {
+
+                width: 65px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="page">
+
+
+    <header class="header">
+
+        <h1>
+            CTBA Judge Form
+        </h1>
+
+        <p>
+            Use this form to fairly rate each contestant's
+            performance.
+        </p>
+
+        <p>
+            Score each category from
+            <strong>0 to 10</strong>.
+        </p>
+
+    </header>
+
+
+
+    <section class="judge-card">
+
+       <div id="judge-gate">
+
+    <h2>Judge Information</h2>
+
+        <label for="judgeName">
+            Judge Name
+        </label>
+
+        <input
+            type="text"
+            id="judgeName"
+            placeholder="Enter your name"
+            required
+        >
+
+        <br>
+
+        <label for="email">
+            Email
+        </label>
+
+        <input
+            type="email"
+            id="email"
+            placeholder="example@email.com"
+            required
+        >
+
+        <br><br>
+
+        <button
+            id="continue-btn"
+            onclick="unlockJudgeForm()"
+        >
+            Continue
+        </button>
+
+        <p id="email-error"></p>
+
+    </div>
+
+    </section>
+
+
+
+    <section id="judge-form" style ="display:none;">
+
+        <div id="loading">
+            Loading contestants...
+        </div>
+
+        <div id="contestants-container"></div>
+
+    </section>
+
+
+
+    <section class="submit-section">
+
+        <button
+            id="submit-btn"
+            onclick="submitScores()"
+            style="display:none;"
+        >
+            Submit Scores
+        </button>
+
+    </section>
+
+
+</div>
+
+
+<script>
+
+
+
+
+const contestantsURL =
+    "https://script.google.com/macros/s/AKfycbzqSNu19fMJTceK13h9Wna74Kef9Napgt-SSY5N71YKE1m53zdvj_RGyYaEEW647Asjzg/exec";
+
+
+const scriptURL =
+    "https://script.google.com/macros/s/AKfycbx6fnEZy1HMv843oQmoFMf9zZjAoBw-oC-TxVyM424e2eysxknfDw1MMRJDukjG9eiobQ/exec";
+
+
+let contestants = [];
+
+
+
+
+function renderContestants() {
+
+    const container =
+        document.getElementById(
+            "contestants-container"
+        );
+
+
+    container.innerHTML = "";
+
+
+    contestants.forEach(
+        function(c, idx) {
+
+            const i = idx + 1;
+
+
+            const block =
+                document.createElement(
+                    "article"
+                );
+
+
+            block.className =
+                "contestant-card";
+
+
+            block.innerHTML = `
+
+                <div class="contestant-header">
+
+                    <span class="contestant-number">
+                        Contestant ${i}
+                    </span>
+
+                    <h1>
+                        ${c.name}
+                    </h1>
+
+                </div>
+
+
+                <div class="contestant-info">
+
+                    <div class="info-item">
+
+                        <label>
+                            Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="name${i}"
+                            value="${c.name}"
+                            readonly
+                        >
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <label>
+                            Age
+                        </label>
+
+                        <input
+                            type="number"
+                            id="age${i}"
+                            value="${c.age}"
+                            readonly
+                        >
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <label>
+                            They are demostrating a(n)
+                        </label>
+
+                        <input
+                            type="text"
+                            id="genre${i}"
+                            value="${c.genre}"
+                            readonly
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="scores">
+
+                    <h3>
+                        Performance Scores
+                    </h3>
+
+
+                    <div class="score-grid">
+
+
+                        <div class="score-item">
+
+                            <label>
+                                Technical Core
+                            </label>
+
+                            <input
+                                type="number"
+                                id="technical${i}"
+                                min="0"
+                                max="10"
+                                step="1"
+                                placeholder="0 - 10"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="score-item">
+
+                            <label>
+                                Stage Presence
+                            </label>
+
+                            <input
+                                type="number"
+                                id="stage${i}"
+                                min="0"
+                                max="10"
+                                step="1"
+                                placeholder="0 - 10"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="score-item">
+
+                            <label>
+                                Expression & Versatility
+                            </label>
+
+                            <input
+                                type="number"
+                                id="expression${i}"
+                                min="0"
+                                max="10"
+                                step="1"
+                                placeholder="0 - 10"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="score-item">
+
+                            <label>
+                                Star Charm
+                            </label>
+
+                            <input
+                                type="number"
+                                id="star${i}"
+                                min="0"
+                                max="10"
+                                step="1"
+                                placeholder="0 - 10"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="score-item">
+
+                            <label>
+                                Growth Potential
+                            </label>
+
+                            <input
+                                type="number"
+                                id="growth${i}"
+                                min="0"
+                                max="10"
+                                step="1"
+                                placeholder="0 - 10"
+                                required
+                            >
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+                <div class="judge-feedback">
+
+
+                    <div class="form-group status-section">
+
+                        <label for="status${i}">
+                            Status
+                        </label>
+
+                        <select id="status${i}">
+                            <option value="" disabled selected>Select status</option>
+                            <option value="Green">Green</option>
+                            <option value="Yellow">Yellow</option>
+                            <option value="Red">Red</option>
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group notes-section">
+
+                        <label for="notes${i}">
+                            Judge Notes
+                        </label>
+
+                        <textarea
+                            id="notes${i}"
+                            rows="5"
+                            maxlength="100"
+                            placeholder="Comments about this contestant..."
+                            oninput="document.getElementById('notes-count${i}').textContent = this.value.length + ' / 100'"
+                        ></textarea>
+
+                        <div class="char-count" id="notes-count${i}">0 / 100</div>
+
+                    </div>
+
+
+                </div>
+
+            `;
+
+
+            container.appendChild(block);
+
+        }
+    );
+
+
+    document.getElementById(
+        "loading"
+    ).style.display = "none";
+
+
+    document.getElementById(
+        "submit-btn"
+    ).style.display = "block";
+
+}
+
+
+
+function unlockJudgeForm() {
+
+    const name =
+        document.getElementById("judgeName")
+        .value
+        .trim();
+
+    const email =
+        document.getElementById("email")
+        .value
+        .trim();
+
+    const error =
+        document.getElementById("email-error");
+
+
+    if (name === "") {
+
+        error.textContent =
+            "Please enter your name.";
+
+        return;
+    }
+
+
+    if (email === "") {
+
+        error.textContent =
+            "Please enter your email address.";
+
+        return;
+    }
+
+
+    const emailRegex =
+        /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+
+
+    if (!emailRegex.test(email)) {
+
+        error.textContent =
+            "Please enter a valid email address.";
+
+        return;
+    }
+
+
+    error.textContent = "";
+
+
+    document.getElementById(
+        "judge-gate"
+    ).style.display = "none";
+
+
+    document.getElementById(
+        "judge-form"
+    ).style.display = "block";
+
+
+    loadContestants();
+}
+
+function loadContestants() {
+
+    fetch(contestantsURL)
+
+        .then(
+            response => response.json()
+        )
+
+        .then(
+            data => {
+
+                if (data.error) {
+
+                    document.getElementById(
+                        "loading"
+                    ).textContent =
+                        "Error loading contestants: " +
+                        data.error;
+
+                    return;
+
+                }
+
+
+                contestants = data;
+
+                renderContestants();
+
+            }
+        )
+
+        .catch(
+            error => {
+
+                console.error(error);
+
+                document.getElementById(
+                    "loading"
+                ).textContent =
+                    "Failed to load contestants. Please refresh the page.";
+
+            }
+        );
+
+}
+
+
+
+
+function submitScores() {
+
+
+    const judgeName =
+        document
+            .getElementById("judgeName")
+            .value
+            .trim();
+
+
+    const email =
+        document
+            .getElementById("email")
+            .value
+            .trim();
+
+
+    if (judgeName === "") {
+
+        alert(
+            "Please enter your name."
+        );
+
+        return;
+
+    }
+
+
+    if (email === "") {
+
+        alert(
+            "Please enter your email."
+        );
+
+        return;
+
+    }
+
+
+    const emailRegex =
+        /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+
+
+    if (!emailRegex.test(email)) {
+
+        alert(
+            "Please enter a valid email address."
+        );
+
+        return;
+
+    }
+
+
+    const scores = {
+
+        type: "Judge",
+
+        judgeName: judgeName,
+
+        email: email,
+
+        contestants: []
+
+    };
+
+
+    for (
+        let i = 1;
+        i <= contestants.length;
+        i++
+    ) {
+
+
+        const contestant = {
+
+            number: i,
+
+            name:
+                document
+                    .getElementById(
+                        "name" + i
+                    )
+                    .value,
+
+            age:
+                document
+                    .getElementById(
+                        "age" + i
+                    )
+                    .value,
+
+            genre:
+                document
+                    .getElementById(
+                        "genre" + i
+                    )
+                    .value,
+
+            technical:
+                document
+                    .getElementById(
+                        "technical" + i
+                    )
+                    .value,
+
+            stage:
+                document
+                    .getElementById(
+                        "stage" + i
+                    )
+                    .value,
+
+            expression:
+                document
+                    .getElementById(
+                        "expression" + i
+                    )
+                    .value,
+
+            star:
+                document
+                    .getElementById(
+                        "star" + i
+                    )
+                    .value,
+
+            growth:
+                document
+                    .getElementById(
+                        "growth" + i
+                    )
+                    .value,
+
+            status:
+                document
+                    .getElementById(
+                        "status" + i
+                    )
+                    .value,
+
+            notes:
+                document
+                    .getElementById(
+                        "notes" + i
+                    )
+                    .value
+
+        };
+
+
+        const scoreFields = [
+            "technical",
+            "stage",
+            "expression",
+            "star",
+            "growth"
+        ];
+
+
+        for (
+            const field of scoreFields
+        ) {
+
+
+            const score =
+                Number(
+                    contestant[field]
+                );
+
+
+            if (
+                contestant[field] === "" ||
+                isNaN(score) ||
+                score < 0 ||
+                score > 10
+            ) {
+
+                alert(
+                    "Contestant " +
+                    i +
+                    " has an invalid " +
+                    field +
+                    " score. Scores must be between 0 and 10."
+                );
+
+                return;
+
+            }
+
+        }
+
+
+        if (contestant.status === "") {
+
+            alert(
+                "Please select a status (Green/Yellow/Red) for Contestant " +
+                i +
+                "."
+            );
+
+            return;
+
+        }
+
+
+        scores.contestants.push(
+            contestant
+        );
+
+    }
+
+
+    const button =
+        document.getElementById(
+            "submit-btn"
+        );
+
+
+    button.disabled = true;
+
+    button.textContent =
+        "Submitting...";
+
+
+    fetch(
+        scriptURL,
+        {
+
+            method: "POST",
+
+            body:
+                JSON.stringify(
+                    scores
+                )
+
+        }
+    )
+
+    .then(
+        response =>
+            response.text()
+    )
+
+    .then(
+        result => {
+
+            if (
+                result ===
+                "Submission successful."
+            ) {
+
+                alert(
+                    "Please note once you click submit, you will be exited out of the page. Please review your votes if necessary"
+                );
+
+                document.getElementById(
+                    "judgeName"
+                ).value = "";
+
+
+                document.getElementById(
+                    "email"
+                ).value = "";
+
+
+                for (
+                    let i = 1;
+                    i <= contestants.length;
+                    i++
+                ) {
+
+                    [
+                        "technical",
+                        "stage",
+                        "expression",
+                        "star",
+                        "growth",
+                        "status",
+                        "notes"
+                    ]
+
+                    .forEach(
+                        field => {
+
+                            document.getElementById(
+                                field + i
+                            ).value = "";
+
+                            if (field === "notes") {
+
+                                document.getElementById(
+                                    "notes-count" + i
+                                ).textContent = "0 / 100";
+
+                            }
+
+                        }
+                    );
+
+                }
+
+                window.close();
+
+            } else {
+
+                alert(result);
+
+            }
+
+
+            button.disabled = false;
+
+            button.textContent =
+                "Submit Scores";
+
+        }
+    )
+
+    .catch(
+        error => {
+
+            console.error(error);
+
+            alert(
+                "There was a problem submitting the scores. Please try again."
+            );
+
+
+            button.disabled = false;
+
+            button.textContent =
+                "Submit Scores";
+
+        }
+    );
+
+}
+
+
+
+
+</script>
+
+</body>
+
+</html>
