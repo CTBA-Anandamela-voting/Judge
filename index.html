@@ -586,6 +586,42 @@
             }
 
         }
+        
+
+    #index-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+    }
+
+    #index-buttons button {
+        border: none;
+        border-radius: 8px;
+        padding: 10px 14px;
+        background: #000000;
+        color: white;
+        cursor: pointer;
+    }
+
+    #index-buttons button:hover {
+        opacity: 0.8;
+    }
+
+    .back-to-top {
+        border: none;
+        border-radius: 8px;
+        padding: 10px 16px;
+        margin: 15px 0;
+        background: #000000;
+        color: white;
+        cursor: pointer;
+    }
+
+    .back-to-top:hover {
+        opacity: 0.8;
+    }
+        
 
     </style>
 
@@ -614,6 +650,11 @@
         </p>
 
     </header>
+    <div id="participant-index">
+    <div id="index-buttons">
+
+    </div>
+    </div>
 
 
 
@@ -702,7 +743,7 @@ const contestantsURL =
 
 
 const scriptURL =
-    "https://script.google.com/macros/s/AKfycbx6fnEZy1HMv843oQmoFMf9zZjAoBw-oC-TxVyM424e2eysxknfDw1MMRJDukjG9eiobQ/exec";
+    "https://script.google.com/macros/s/AKfycby-E-hP7dLytU_B_AmTbvP3dr20tcZxwm2outbk_rty0P0Dy0IuexVTRnhn2nGDKXHbwA/exec";
 
 
 let contestants = [];
@@ -733,8 +774,8 @@ function renderContestants() {
                 );
 
 
-            block.className =
-                "contestant-card";
+            block.className = "contestant";
+            block.id = "contestant-" + i;
 
 
             block.innerHTML = `
@@ -948,6 +989,17 @@ function renderContestants() {
                         ></textarea>
 
                         <div class="char-count" id="notes-count${i}">0 / 100</div>
+                        <button
+                            type="button"
+                            class="back-to-top"
+                            onclick="window.scrollTo({
+                                top: 0,
+                                behavior: 'smooth'
+                            })"
+                        >
+                            ↑ Back to Top
+                        </button>
+                        
 
                     </div>
 
@@ -975,7 +1027,43 @@ function renderContestants() {
 }
 
 
+function createParticipantIndex() {
 
+    const index =
+        document.getElementById("index-buttons");
+
+    index.innerHTML = "";
+
+    contestants.forEach(function(c, i) {
+
+        const number = i + 1;
+
+        const button =
+            document.createElement("button");
+
+        button.textContent =
+            "Contestant " + number + " - " + c.name;
+
+        button.type = "button";
+
+        button.onclick = function() {
+
+            const contestant =
+                document.getElementById(
+                    "contestant-" + number
+                );
+
+            contestant.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+        };
+
+        index.appendChild(button);
+
+    });
+}
 function unlockJudgeForm() {
 
     const name =
@@ -1066,6 +1154,7 @@ function loadContestants() {
                 contestants = data;
 
                 renderContestants();
+                createParticipantIndex();
 
             }
         )
@@ -1336,12 +1425,11 @@ function submitScores() {
         result => {
 
             if (
-                result ===
-                "Submission successful."
+                result.indexOf("Submission successful") === 0
             ) {
 
                 alert(
-                    "Please note once you click submit, you will be exited out of the page. Please review your votes if necessary"
+                    "Thank you for voting, please have a nice day."
                 );
 
                 document.getElementById(
