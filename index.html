@@ -1098,14 +1098,14 @@ function unlockJudgeForm() {
         .getElementById("email-error");
 
 
-    // Check name
+    
     if (name === "") {
         error.textContent = "Please enter your name.";
         return;
     }
 
 
-    // Check email
+    
     if (email === "") {
         error.textContent = "Please enter your email address.";
         return;
@@ -1121,7 +1121,7 @@ function unlockJudgeForm() {
     }
 
 
-    // Check phone
+    
     if (phone === "") {
         error.textContent = "Please enter your phone number.";
         return;
@@ -1141,7 +1141,7 @@ function unlockJudgeForm() {
 
 
     const url =
-        contestantsAccessURL +
+        judgeVerificationURL +
         "?name=" + encodeURIComponent(name) +
         "&email=" + encodeURIComponent(email) +
         "&phone=" + encodeURIComponent(phone);
@@ -1164,7 +1164,7 @@ function unlockJudgeForm() {
 
             if (data.success === true) {
 
-                // Information is correct AND Access = Y
+                
 
                 error.textContent = "";
 
@@ -1262,6 +1262,13 @@ function submitScores() {
     const email =
         document
             .getElementById("email")
+            .value
+            .trim();
+
+
+    const phone =
+        document
+            .getElementById("phone")
             .value
             .trim();
 
