@@ -665,13 +665,13 @@
     <h2>Judge Information</h2>
 
         <label for="judgeName">
-            Judge's Name
+            Judge Name
         </label>
 
         <input
             type="text"
             id="judgeName"
-            placeholder="First name only"
+            placeholder="Enter your name"
             required
         >
 
@@ -689,18 +689,6 @@
         >
 
         <br><br>
-        <label for="phone">
-        Phone Number
-    </label>
-
-    <input
-        type="tel"
-        id="phone"
-        placeholder="(xxx)-xxx-xxxx"
-        required
-    >
-
-    <br><br>
 
         <button
             id="continue-btn"
@@ -756,7 +744,6 @@ const contestantsURL =
 
 const scriptURL =
     "https://script.google.com/macros/s/AKfycbwjBbeEpWC9IqgBOYqwJ-hNagNx74mw8qLb92A6tvWLDqbgobsclKS9sRXQU_2B9JgEVg/exec";
-const judgeVerificationURL = "https://script.google.com/macros/s/AKfycby2vOpyV_j3suUt15f9hFh2sYCegRCDix5QIo1uUaFuZmGSfO8VKWWHMDUCLa_ptTXz/exec";
 
 
 let contestants = [];
@@ -1080,28 +1067,18 @@ function createParticipantIndex() {
 function unlockJudgeForm() {
 
     const name =
-        document
-            .getElementById("judgeName")
-            .value
-            .trim();
+        document.getElementById("judgeName")
+        .value
+        .trim();
 
     const email =
-        document
-            .getElementById("email")
-            .value
-            .trim();
-
-    const phone =
-        document
-            .getElementById("phone")
-            .value
-            .trim();
+        document.getElementById("email")
+        .value
+        .trim();
 
     const error =
         document.getElementById("email-error");
 
-
-     
 
     if (name === "") {
 
@@ -1111,8 +1088,6 @@ function unlockJudgeForm() {
         return;
     }
 
-
-    
 
     if (email === "") {
 
@@ -1136,123 +1111,20 @@ function unlockJudgeForm() {
     }
 
 
-    
-
-    if (phone === "") {
-
-        error.textContent =
-            "Please enter your phone number.";
-
-        return;
-    }
-
-
-    const phoneDigits =
-        phone.replace(/\D/g, "");
-
-
-    if (phoneDigits.length < 7) {
-
-        error.textContent =
-            "Please enter a valid phone number.";
-
-        return;
-    }
-
-
-    
-
-    const button =
-        document.getElementById("continue-btn");
-
-    button.disabled = true;
-
-    button.textContent =
-        "Checking...";
-
     error.textContent = "";
 
 
-    
-
-    fetch(
-        judgeVerificationURL,
-        {
-
-            method: "POST",
-
-            body: JSON.stringify({
-
-                name: name,
-
-                email: email,
-
-                phone: phone
-
-            })
-
-        }
-    )
-
-    .then(
-        response => response.json()
-    )
-
-    .then(
-        result => {
-
-            if (result.valid === true) {
-
-                
-
-                document.getElementById(
-                    "judge-gate"
-                ).style.display = "none";
+    document.getElementById(
+        "judge-gate"
+    ).style.display = "none";
 
 
-                document.getElementById(
-                    "judge-form"
-                ).style.display = "block";
+    document.getElementById(
+        "judge-form"
+    ).style.display = "block";
 
 
-                // Now load contestants
-
-                loadContestants();
-
-            } else {
-
-                
-
-                error.textContent =
-                    "The name, email, or phone number is incorrect. Please try again.";
-
-            }
-
-
-            button.disabled = false;
-
-            button.textContent =
-                "Continue";
-
-        }
-    )
-
-    .catch(
-        errorObject => {
-
-            console.error(errorObject);
-
-            error.textContent =
-                "Unable to verify your information. Please try again.";
-
-            button.disabled = false;
-
-            button.textContent =
-                "Continue";
-
-        }
-    );
-
+    loadContestants();
 }
 
 function loadContestants() {
@@ -1366,8 +1238,6 @@ function submitScores() {
         judgeName: judgeName,
 
         email: email,
-
-        phone: phone, 
 
         contestants: []
 
