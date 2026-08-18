@@ -973,7 +973,7 @@ function renderContestants() {
 
                     <div class="form-group status-section">
 
-                        <label for="status${i}">
+                        <label for="status${i}" onchange="handleStatusChange(${i})>
                             Status
                         </label>
 
@@ -1327,7 +1327,28 @@ function loadContestants() {
 
 }
 
+function handleStatusChange(i) {
 
+    const status = document.getElementById("status" + i).value;
+
+    const scoreFields = [
+        "technical",
+        "stage",
+        "expression",
+        "star",
+        "growth"
+    ];
+
+    if (status === "Red") {
+
+        scoreFields.forEach(function(field) {
+
+            document.getElementById(field + i).value = 0;
+
+        });
+
+    }
+}
 
 
 function submitScores() {
