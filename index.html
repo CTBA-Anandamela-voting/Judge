@@ -1425,83 +1425,77 @@ function submitScores() {
         i <= contestants.length;
         i++
     ) {
+            const requiredIds = [
+        "name" + i,
+        "age" + i,
+        "genre" + i,
+        "technical" + i,
+        "stage" + i,
+        "expression" + i,
+        "star" + i,
+        "growth" + i,
+        "status" + i,
+        "notes" + i
+    ];
+
+    for (const id of requiredIds) {
+
+        if (!document.getElementById(id)) {
+
+            console.error(
+                "Missing element:",
+                id,
+                "for contestant:",
+                i
+            );
+
+            alert(
+                "There is a problem with Contestant " +
+                i +
+                ". Missing field: " +
+                id
+            );
+
+            return;
+        }
+    }
 
 
         const contestant = {
 
-            number: i,
+        number: i,
 
-            name:
-                document
-                    .getElementById(
-                        "name" + i
-                    )
-                    .value,
+        name:
+            document.getElementById("name" + i).value,
 
-            age:
-                document
-                    .getElementById(
-                        "age" + i
-                    )
-                    .value,
+        age:
+            document.getElementById("age" + i).value,
 
-            genre:
-                document
-                    .getElementById(
-                        "genre" + i
-                    )
-                    .value,
+        genre:
+            document.getElementById("genre" + i).value,
 
-            technical:
-                document
-                    .getElementById(
-                        "technical" + i
-                    )
-                    .value,
+        technical:
+            document.getElementById("technical" + i).value,
 
-            stage:
-                document
-                    .getElementById(
-                        "stage" + i
-                    )
-                    .value,
+        stage:
+            document.getElementById("stage" + i).value,
 
-            expression:
-                document
-                    .getElementById(
-                        "expression" + i
-                    )
-                    .value,
+        expression:
+            document.getElementById("expression" + i).value,
 
-            star:
-                document
-                    .getElementById(
-                        "star" + i
-                    )
-                    .value,
+        star:
+            document.getElementById("star" + i).value,
 
-            growth:
-                document
-                    .getElementById(
-                        "growth" + i
-                    )
-                    .value,
+        growth:
+            document.getElementById("growth" + i).value,
 
-            status:
-                document
-                    .getElementById(
-                        "status" + i
-                    )
-                    .value,
+        status:
+            document.getElementById("status" + i).value,
 
-            notes:
-                document
-                    .getElementById(
-                        "notes" + i
-                    )
-                    .value
+        notes:
+            document.getElementById("notes" + i).value
 
-        };
+    };
 
 
         const scoreFields = [
