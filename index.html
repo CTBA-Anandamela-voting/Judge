@@ -1328,28 +1328,27 @@ function loadContestants() {
 }
 
 
-function handleStatusChange(i) {
+    function handleStatusChange(i) {
+        const status = document.getElementById("status" + i).value;
+        const scoreFields = ["technical", "stage", "expression", "star", "growth"];
 
-    const status = document.getElementById("status" + i).value;
-
-    const scoreFields = [
-        "technical",
-        "stage",
-        "expression",
-        "star",
-        "growth"
-    ];
-
-    if (status === "Red") {
-
-        scoreFields.forEach(function(field) {
-
-            document.getElementById(field + i).value = 0;
-
-        });
-
+        if (status === "Red") {
+            scoreFields.forEach(function(field) {
+                const input = document.getElementById(field + i);
+                input.value = 0;
+               
+                input.readOnly = true; 
+                input.style.backgroundColor = "#f0f0f0";
+            });
+        } else {
+            
+            scoreFields.forEach(function(field) {
+                const input = document.getElementById(field + i);
+                input.readOnly = false;
+                input.style.backgroundColor = "white";
+            });
+        }
     }
-}
 
 function submitScores() {
 
@@ -1366,6 +1365,11 @@ function submitScores() {
             .getElementById("email")
             .value
             .trim();
+    const phone = 
+        document
+        .getElementById("phone")
+        .value
+        .trim();
 
 
     if (judgeName === "") {
@@ -1460,42 +1464,23 @@ function submitScores() {
         }
     }
 
+        const currentStatus = document.getElementById("status" + i).value;
 
         const contestant = {
+            number: i,
+            name: document.getElementById("name" + i).value,
+            age: document.getElementById("age" + i).value,
+            genre: document.getElementById("genre" + i).value,
+            // If status is Red, force scores to 0, otherwise take the input value
+            technical:  currentStatus === "Red" ? 0 : document.getElementById("technical" + i).value,
+            stage:      currentStatus === "Red" ? 0 : document.getElementById("stage" + i).value,
+            expression: currentStatus === "Red" ? 0 : document.getElementById("expression" + i).value,
+            star:       currentStatus === "Red" ? 0 : document.getElementById("star" + i).value,
+            growth:     currentStatus === "Red" ? 0 : document.getElementById("growth" + i).value,
+            status:     currentStatus,
+            notes:      document.getElementById("notes" + i).value
+        };
 
-        number: i,
-
-        name:
-            document.getElementById("name" + i).value,
-
-        age:
-            document.getElementById("age" + i).value,
-
-        genre:
-            document.getElementById("genre" + i).value,
-
-        technical:
-            document.getElementById("technical" + i).value,
-
-        stage:
-            document.getElementById("stage" + i).value,
-
-        expression:
-            document.getElementById("expression" + i).value,
-
-        star:
-            document.getElementById("star" + i).value,
-
-        growth:
-            document.getElementById("growth" + i).value,
-
-        status:
-            document.getElementById("status" + i).value,
-
-        notes:
-            document.getElementById("notes" + i).value
-
-    };
 
 
         const scoreFields = [
