@@ -756,7 +756,7 @@ const contestantsURL =
 
 const scriptURL =
     "https://script.google.com/macros/s/AKfycbwjBbeEpWC9IqgBOYqwJ-hNagNx74mw8qLb92A6tvWLDqbgobsclKS9sRXQU_2B9JgEVg/exec";
-const judgeVerificationURL = "https://script.google.com/macros/s/AKfycby2vOpyV_j3suUt15f9hFh2sYCegRCDix5QIo1uUaFuZmGSfO8VKWWHMDUCLa_ptTXz/exec";
+const judgeVerificationURL = "https://script.google.com/macros/s/AKfycbwo6KtRzPiIt1xO5xCj0ml0afHedQTVfqvup4qGtMIq6HxW71Xlx03bmmsTyvMDJnQ/exec";
 
 
 let contestants = [];
@@ -1079,29 +1079,26 @@ function createParticipantIndex() {
 }
 function unlockJudgeForm() {
 
-    const name =
-        document
-            .getElementById("judgeName")
-            .value
-            .trim();
+    const name = document
+        .getElementById("judgeName")
+        .value
+        .trim();
 
-    const email =
-        document
-            .getElementById("email")
-            .value
-            .trim();
+    const email = document
+        .getElementById("email")
+        .value
+        .trim();
 
-    const phone =
-        document
-            .getElementById("phone")
-            .value
-            .trim();
+    const phone = document
+        .getElementById("phone")
+        .value
+        .trim();
 
-    const error =
-        document.getElementById("email-error");
+    const error = document
+        .getElementById("email-error");
 
 
-     
+    
 
     if (name === "") {
 
@@ -1109,6 +1106,7 @@ function unlockJudgeForm() {
             "Please enter your name.";
 
         return;
+
     }
 
 
@@ -1117,9 +1115,10 @@ function unlockJudgeForm() {
     if (email === "") {
 
         error.textContent =
-            "Please enter your email address.";
+            "Please enter your email.";
 
         return;
+
     }
 
 
@@ -1133,10 +1132,11 @@ function unlockJudgeForm() {
             "Please enter a valid email address.";
 
         return;
+
     }
 
 
-    
+
 
     if (phone === "") {
 
@@ -1144,6 +1144,7 @@ function unlockJudgeForm() {
             "Please enter your phone number.";
 
         return;
+
     }
 
 
@@ -1151,107 +1152,131 @@ function unlockJudgeForm() {
         phone.replace(/\D/g, "");
 
 
-    if (phoneDigits.length < 7) {
+    if (phoneDigits.length !== 10) {
 
         error.textContent =
-            "Please enter a valid phone number.";
+            "Please enter a valid 10-digit phone number.";
 
         return;
+
     }
 
 
-    
-
-    const button =
-        document.getElementById("continue-btn");
-
-    button.disabled = true;
-
-    button.textContent =
-        "Checking...";
-
-    error.textContent = "";
+    error.textContent =
+        "Verifying information...";
 
 
     
 
-    fetch(
-        judgeVerificationURL,
-        {
-
-            method: "POST",
-
-            body: JSON.stringify({
-
-                name: name,
-
-                email: email,
-
-                phone: phone
-
-            })
-
-        }
-    )
-
-    .then(
-        response => response.json()
-    )
-
-    .then(
-        result => {
-
-            if (result.valid === true) {
-
-                
-
-                document.getElementById(
-                    "judge-gate"
-                ).style.display = "none";
+    const callbackName =
+        "judgeVerificationCallback";
 
 
-                document.getElementById(
-                    "judge-form"
-                ).style.display = "block";
+    window[callbackName] = function(data) {
+
+        console.log(
+            "Verification response:",
+            data
+        );
 
 
-                // Now load contestants
+        if (data.success === true) {
 
-                loadContestants();
-
-            } else {
-
-                
-
-                error.textContent =
-                    "The name, email, or phone number is incorrect. Please try again.";
-
-            }
+            error.textContent = "";
 
 
-            button.disabled = false;
+            document.getElementById(
+                "judge-gate"
+            ).style.display = "none";
 
-            button.textContent =
-                "Continue";
 
-        }
-    )
+            document.getElementById(
+                "judge-form"
+            ).style.display = "block";
 
-    .catch(
-        errorObject => {
 
-            console.error(errorObject);
+            loadContestants();
+
+
+        } else {
 
             error.textContent =
-                "Unable to verify your information. Please try again.";
-
-            button.disabled = false;
-
-            button.textContent =
-                "Continue";
+                data.message ||
+                "Unable to verify your information.";
 
         }
+
+
+        
+
+        const script =
+            document.getElementById(
+                "judge-verification-script"
+            );
+
+
+        if (script) {
+
+            script.remove();
+
+        }
+
+
+        delete window[callbackName];
+
+    };
+
+
+    const url =
+        judgeVerificationURL +
+        "?name=" +
+        encodeURIComponent(name) +
+        "&email=" +
+        encodeURIComponent(email) +
+        "&phone=" +
+        encodeURIComponent(phone) +
+        "&callback=" +
+        callbackName;
+
+
+    console.log(
+        "Verification URL:",
+        url
     );
+
+
+    const script =
+        document.createElement("script");
+
+
+    script.id =
+        "judge-verification-script";
+
+
+    script.src =
+        url;
+
+
+    script.onerror = function() {
+
+        console.error(
+            "Could not connect to verification server."
+        );
+
+
+        error.textContent =
+            "Unable to connect to the verification server. Please try again.";
+
+
+        script.remove();
+
+
+        delete window[callbackName];
+
+    };
+
+
+    document.body.appendChild(script);
 
 }
 
