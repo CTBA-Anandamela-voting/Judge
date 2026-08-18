@@ -973,11 +973,11 @@ function renderContestants() {
 
                     <div class="form-group status-section">
 
-                        <label for="status${i}" onchange="handleStatusChange(${i})>
+                        <label for="status${i}">
                             Status
                         </label>
 
-                        <select id="status${i}">
+                        <select id="status${i} onchange="handleStatusChange(${i})">
                             <option value="" disabled selected>Select status</option>
                             <option value="Green">Green</option>
                             <option value="Yellow">Yellow</option>
@@ -1327,6 +1327,7 @@ function loadContestants() {
 
 }
 
+
 function handleStatusChange(i) {
 
     const status = document.getElementById("status" + i).value;
@@ -1349,7 +1350,6 @@ function handleStatusChange(i) {
 
     }
 }
-
 
 function submitScores() {
 
