@@ -1079,35 +1079,46 @@ function createParticipantIndex() {
 }
 function unlockJudgeForm() {
 
-    const name = document
-        .getElementById("judgeName")
-        .value
-        .trim();
+    const name =
+        document
+            .getElementById("judgeName")
+            .value
+            .trim();
 
-    const email = document
-        .getElementById("email")
-        .value
-        .trim();
+    const email =
+        document
+            .getElementById("email")
+            .value
+            .trim();
 
-    const phone = document
-        .getElementById("phone")
-        .value
-        .trim();
+    const phone =
+        document
+            .getElementById("phone")
+            .value
+            .trim();
 
-    const error = document
-        .getElementById("email-error");
+    const error =
+        document.getElementById("email-error");
 
 
-    // Check name
+     
+
     if (name === "") {
-        error.textContent = "Please enter your name.";
+
+        error.textContent =
+            "Please enter your name.";
+
         return;
     }
 
 
-    // Check email
+    
+
     if (email === "") {
-        error.textContent = "Please enter your email address.";
+
+        error.textContent =
+            "Please enter your email address.";
+
         return;
     }
 
@@ -1115,88 +1126,133 @@ function unlockJudgeForm() {
     const emailRegex =
         /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
 
+
     if (!emailRegex.test(email)) {
-        error.textContent = "Please enter a valid email address.";
-        return;
-    }
 
-
-    // Check phone
-    if (phone === "") {
-        error.textContent = "Please enter your phone number.";
-        return;
-    }
-
-
-    const phoneDigits = phone.replace(/\D/g, "");
-
-    if (phoneDigits.length !== 10) {
         error.textContent =
-            "Please enter a valid 10-digit phone number.";
+            "Please enter a valid email address.";
+
         return;
     }
 
 
-    error.textContent = "Checking information...";
+    
+
+    if (phone === "") {
+
+        error.textContent =
+            "Please enter your phone number.";
+
+        return;
+    }
 
 
-    const url =
-        judgeVerificationURL +
-        "?name=" + encodeURIComponent(name) +
-        "&email=" + encodeURIComponent(email) +
-        "&phone=" + encodeURIComponent(phone);
+    const phoneDigits =
+        phone.replace(/\D/g, "");
 
 
-    fetch(url)
+    if (phoneDigits.length < 7) {
 
-        .then(response => {
+        error.textContent =
+            "Please enter a valid phone number.";
 
-            if (!response.ok) {
-                throw new Error(
-                    "Server returned " + response.status
-                );
-            }
+        return;
+    }
 
-            return response.json();
-        })
 
-        .then(data => {
+    
 
-            if (data.success === true) {
+    const button =
+        document.getElementById("continue-btn");
 
-                // Information is correct AND Access = Y
+    button.disabled = true;
 
-                error.textContent = "";
+    button.textContent =
+        "Checking...";
+
+    error.textContent = "";
+
+
+    
+
+    fetch(
+        judgeVerificationURL,
+        {
+
+            method: "POST",
+
+            body: JSON.stringify({
+
+                name: name,
+
+                email: email,
+
+                phone: phone
+
+            })
+
+        }
+    )
+
+    .then(
+        response => response.json()
+    )
+
+    .then(
+        result => {
+
+            if (result.valid === true) {
+
+                
 
                 document.getElementById(
                     "judge-gate"
                 ).style.display = "none";
 
+
                 document.getElementById(
                     "judge-form"
                 ).style.display = "block";
+
+
+                // Now load contestants
 
                 loadContestants();
 
             } else {
 
-                // Wrong information OR Access = N
+                
 
                 error.textContent =
-                    "Unable to verify your information. Please check your name, email, and phone number.";
+                    "The name, email, or phone number is incorrect. Please try again.";
 
             }
 
-        })
 
-        .catch(err => {
+            button.disabled = false;
 
-            console.error(err);
+            button.textContent =
+                "Continue";
+
+        }
+    )
+
+    .catch(
+        errorObject => {
+
+            console.error(errorObject);
 
             error.textContent =
                 "Unable to verify your information. Please try again.";
 
-        });
+            button.disabled = false;
+
+            button.textContent =
+                "Continue";
+
+        }
+    );
+
 }
 
 function loadContestants() {
