@@ -756,7 +756,7 @@ const contestantsURL =
 
 const scriptURL =
     "https://script.google.com/macros/s/AKfycbwjBbeEpWC9IqgBOYqwJ-hNagNx74mw8qLb92A6tvWLDqbgobsclKS9sRXQU_2B9JgEVg/exec";
-const judgeVerificationURL = "https://script.google.com/macros/s/AKfycbwK-CmojPb4xOskxs0ZCbxTwSFq3ZJZkTxpBZbxFbMOAX_z7bNLw2TEHovJ32ZyBows/exec";
+const judgeVerificationURL = "https://script.google.com/macros/s/AKfycbzFIBnq_p4M5yKjR4K8DH7CkYnKUFj4KgXBeiCfOMjPEfjYDnpKB7uH5O6sLrJgh_JS/exec";
 
 
 let contestants = [];
@@ -1098,14 +1098,16 @@ function unlockJudgeForm() {
         .getElementById("email-error");
 
 
+    // Check name
     if (name === "") {
         error.textContent = "Please enter your name.";
         return;
     }
 
 
+    // Check email
     if (email === "") {
-        error.textContent = "Please enter your email.";
+        error.textContent = "Please enter your email address.";
         return;
     }
 
@@ -1119,6 +1121,7 @@ function unlockJudgeForm() {
     }
 
 
+    // Check phone
     if (phone === "") {
         error.textContent = "Please enter your phone number.";
         return;
@@ -1134,30 +1137,23 @@ function unlockJudgeForm() {
     }
 
 
-    error.textContent = "Verifying information...";
+    error.textContent = "Checking information...";
 
 
     const url =
-        
+        contestantsAccessURL +
         "?name=" + encodeURIComponent(name) +
         "&email=" + encodeURIComponent(email) +
         "&phone=" + encodeURIComponent(phone);
-
-
-    console.log("Verification URL:", url);
 
 
     fetch(url)
 
         .then(response => {
 
-            console.log("Response status:", response.status);
-            console.log("Response OK:", response.ok);
-
             if (!response.ok) {
                 throw new Error(
-                    "Verification server returned HTTP " +
-                    response.status
+                    "Server returned " + response.status
                 );
             }
 
@@ -1166,10 +1162,9 @@ function unlockJudgeForm() {
 
         .then(data => {
 
-            console.log("Verification response:", data);
-
-
             if (data.success === true) {
+
+                // Information is correct AND Access = Y
 
                 error.textContent = "";
 
@@ -1177,36 +1172,29 @@ function unlockJudgeForm() {
                     "judge-gate"
                 ).style.display = "none";
 
-
                 document.getElementById(
                     "judge-form"
                 ).style.display = "block";
-
 
                 loadContestants();
 
             } else {
 
+                // Wrong information OR Access = N
+
                 error.textContent =
-                    data.message ||
-                    "Unable to verify your information.";
+                    "Unable to verify your information. Please check your name, email, and phone number.";
 
             }
 
         })
 
-        .catch(error => {
+        .catch(err => {
 
-            console.error(
-                "VERIFICATION ERROR:",
-                error
-            );
+            console.error(err);
 
-            errorElement =
-                document.getElementById("email-error");
-
-            errorElement.textContent =
-                "Unable to connect to the verification server. Please try again.";
+            error.textContent =
+                "Unable to verify your information. Please try again.";
 
         });
 }
@@ -1274,13 +1262,6 @@ function submitScores() {
     const email =
         document
             .getElementById("email")
-            .value
-            .trim();
-
-
-    const phone =
-        document
-            .getElementById("phone")
             .value
             .trim();
 
